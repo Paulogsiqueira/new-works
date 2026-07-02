@@ -133,8 +133,6 @@ if (track) {
         <ul class="system-feats">${s.feats.map((f) => `<li>${f}</li>`).join('')}</ul>
         <div class="system-actions">
           <a class="btn btn-primary" href="${s.demo}" target="_blank" rel="noopener">Ver demonstração</a>
-          ${s.admin ? `<a class="btn btn-ghost" href="${s.admin}" target="_blank" rel="noopener">Painel admin</a>` : ''}
-          <a class="btn btn-ghost" href="https://github.com/Paulogsiqueira/${s.repo}" target="_blank" rel="noopener">Código</a>
         </div>
       </div>
     </article>`).join('');
