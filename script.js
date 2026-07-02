@@ -97,3 +97,91 @@ if (grid) {
     t = setTimeout(() => previews.forEach(fit), 150);
   });
 }
+
+// ===== Sistemas completos (carrossel) =====
+const systems = [
+  {
+    repo: 'horizonte-imoveis',
+    demo: 'https://paulogsiqueira.github.io/horizonte-imoveis/',
+    admin: 'https://paulogsiqueira.github.io/horizonte-imoveis/login.html',
+    badge: 'Fullstack · Supabase',
+    nome: 'Horizonte Imóveis',
+    desc: 'Portal imobiliário com painel administrativo. O corretor faz login e gerencia os imóveis; o site público lista tudo com busca, galeria e contato.',
+    feats: [
+      'Login seguro do corretor (Supabase Auth)',
+      'Cadastrar, editar e excluir imóveis',
+      'Upload de até 6 fotos por imóvel (Storage)',
+      'Busca por finalidade, tipo, cidade e preço',
+      'Banco PostgreSQL + API em tempo real',
+    ],
+  },
+];
+
+const track = document.getElementById('systemsTrack');
+const SYS_W = 1280;
+if (track) {
+  track.innerHTML = systems.map((s) => `
+    <article class="system-card">
+      <div class="system-bg">
+        <iframe data-src="${s.demo}" title="Layout do sistema ${s.nome}" loading="lazy" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
+        <div class="system-shade"></div>
+      </div>
+      <div class="system-content">
+        <span class="system-badge">${s.badge}</span>
+        <h3>${s.nome}</h3>
+        <p class="system-desc">${s.desc}</p>
+        <ul class="system-feats">${s.feats.map((f) => `<li>${f}</li>`).join('')}</ul>
+        <div class="system-actions">
+          <a class="btn btn-primary" href="${s.demo}" target="_blank" rel="noopener">Ver demonstração</a>
+          ${s.admin ? `<a class="btn btn-ghost" href="${s.admin}" target="_blank" rel="noopener">Painel admin</a>` : ''}
+          <a class="btn btn-ghost" href="https://github.com/Paulogsiqueira/${s.repo}" target="_blank" rel="noopener">Código</a>
+        </div>
+      </div>
+    </article>`).join('');
+
+  const fitSys = (card) => {
+    const bg = card.querySelector('.system-bg');
+    const f = card.querySelector('iframe');
+    if (!f || !bg) return;
+    const scale = bg.clientWidth / SYS_W;
+    f.style.width = SYS_W + 'px';
+    f.style.height = Math.ceil(bg.clientHeight / scale) + 'px';
+    f.style.transform = 'scale(' + scale + ')';
+  };
+  const cards = Array.from(track.querySelectorAll('.system-card'));
+
+  const ioSys = new IntersectionObserver((entries, obs) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const card = entry.target;
+      const f = card.querySelector('iframe');
+      fitSys(card);
+      if (f && !f.src && f.dataset.src) { f.src = f.dataset.src; f.addEventListener('load', () => fitSys(card)); }
+      obs.unobserve(card);
+    });
+  }, { rootMargin: '400px' });
+  cards.forEach((c) => ioSys.observe(c));
+  window.addEventListener('resize', () => { clearTimeout(window._sysT); window._sysT = setTimeout(() => cards.forEach(fitSys), 150); });
+
+  const prev = document.getElementById('sysPrev');
+  const next = document.getElementById('sysNext');
+  const dotsBox = document.getElementById('systemsDots');
+  const step = () => (cards[0] ? cards[0].getBoundingClientRect().width + 24 : track.clientWidth);
+  prev?.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+  next?.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+
+  if (cards.length <= 1) {
+    if (prev) prev.style.display = 'none';
+    if (next) next.style.display = 'none';
+  } else if (dotsBox) {
+    dotsBox.innerHTML = cards.map((_, i) => `<button aria-label="Ir para o sistema ${i + 1}"></button>`).join('');
+    const dots = Array.from(dotsBox.children);
+    dots.forEach((d, i) => d.addEventListener('click', () => track.scrollTo({ left: i * step(), behavior: 'smooth' })));
+    const setActive = () => {
+      const idx = Math.round(track.scrollLeft / step());
+      dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    };
+    setActive();
+    track.addEventListener('scroll', () => { clearTimeout(track._s); track._s = setTimeout(setActive, 80); });
+  }
+}
