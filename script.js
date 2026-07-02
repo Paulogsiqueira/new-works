@@ -115,6 +115,20 @@ const systems = [
       'Banco PostgreSQL + API em tempo real',
     ],
   },
+  {
+    repo: 'barbearia-agendamento',
+    demo: 'https://paulogsiqueira.github.io/barbearia-agendamento/',
+    badge: 'Fullstack · Supabase',
+    nome: 'Barbearia Império',
+    desc: 'Sistema de agendamento para barbearia com 3 profissionais. O cliente escolhe o barbeiro, o dia num calendário e o horário livre; o barbeiro gerencia a própria agenda pela área logada.',
+    feats: [
+      'Agendamento online (barbeiro → data → horário)',
+      'Área do barbeiro com login (Supabase Auth)',
+      'Define horários disponíveis por dia',
+      'Vê cliente + telefone de cada reserva',
+      'Site institucional com equipe e serviços',
+    ],
+  },
 ];
 
 const track = document.getElementById('systemsTrack');
