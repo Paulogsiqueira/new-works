@@ -142,8 +142,18 @@ section { padding: 5.5rem 0; }
 .work-code { flex: none; display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line); color: var(--muted); transition: color .2s ease, border-color .2s ease; }
 .work-code:hover { color: var(--ink); border-color: var(--brand); }
 .work-code svg { width: 18px; height: 18px; }
-.portfolio-note { text-align: center; margin-top: 2.5rem; color: var(--muted); }
+.portfolio-note { text-align: center; margin-top: 2rem; color: var(--muted); }
 .portfolio-note a { color: var(--brand-2); font-weight: 600; }
+
+/* Paginação */
+.pager { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: .5rem; margin-top: 2.2rem; }
+.pg-btn { min-width: 40px; height: 40px; padding: 0 .6rem; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-weight: 600; cursor: pointer; transition: border-color .2s ease, background .2s ease, color .2s ease; }
+.pg-btn:hover:not(:disabled) { border-color: var(--brand); color: var(--brand-2); }
+.pg-btn.active { background: var(--grad); color: #06080d; border-color: transparent; }
+.pg-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+.info-lines a { color: var(--ink); }
+.info-lines a:hover { color: var(--brand-2); }
 
 /* Processo */
 .steps { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1.4rem; counter-reset: s; }

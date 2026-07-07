@@ -34,30 +34,12 @@ const PREVIEW_W = 1280; // largura "virtual" do site dentro do iframe
 const grid = document.getElementById('workGrid');
 
 if (grid) {
-  projects.forEach((p) => {
-    const url = BASE + p.repo + '/';
-    const card = document.createElement('article');
-    card.className = 'work';
-    card.style.setProperty('--c', p.cor);
-    card.innerHTML = `
-      <div class="work-preview">
-        <span class="ph">carregando preview…</span>
-        <iframe data-src="${url}" title="Prévia do site ${p.nome}" loading="lazy" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
-        <a class="work-overlay" href="${url}" target="_blank" rel="noopener"><span>Ver site ao vivo →</span></a>
-      </div>
-      <div class="work-meta">
-        <div>
-          <h3>${p.nome}</h3>
-          <span class="work-tag">${p.area}</span>
-        </div>
-        <a class="work-code" href="https://github.com/Paulogsiqueira/${p.repo}" target="_blank" rel="noopener" aria-label="Ver código de ${p.nome}">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.5v-1.8c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>
-        </a>
-      </div>`;
-    grid.appendChild(card);
-  });
+  const PER_PAGE = 6;
+  const totalPages = Math.ceil(projects.length / PER_PAGE);
+  let page = 0;
+  let previews = [];
+  let io = null;
 
-  // Escala cada iframe para caber na largura do card
   const fit = (preview) => {
     const iframe = preview.querySelector('iframe');
     if (!iframe) return;
@@ -67,35 +49,66 @@ if (grid) {
     iframe.style.transform = 'scale(' + scale + ')';
   };
 
-  const previews = Array.from(grid.querySelectorAll('.work-preview'));
+  const cardHTML = (p) => {
+    const url = BASE + p.repo + '/';
+    return `<article class="work" style="--c:${p.cor}">
+      <div class="work-preview">
+        <span class="ph">carregando preview…</span>
+        <iframe data-src="${url}" title="Prévia do site ${p.nome}" loading="lazy" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
+        <a class="work-overlay" href="${url}" target="_blank" rel="noopener"><span>Ver site ao vivo →</span></a>
+      </div>
+      <div class="work-meta">
+        <div><h3>${p.nome}</h3><span class="work-tag">${p.area}</span></div>
+        <a class="work-code" href="https://github.com/Paulogsiqueira/${p.repo}" target="_blank" rel="noopener" aria-label="Ver código de ${p.nome}">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.5v-1.8c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>
+        </a>
+      </div>
+    </article>`;
+  };
 
-  // Carrega o iframe só quando o card se aproxima da tela
-  const io = new IntersectionObserver((entries, obs) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      const preview = entry.target;
-      const iframe = preview.querySelector('iframe');
-      fit(preview);
-      if (iframe && !iframe.src && iframe.dataset.src) {
-        iframe.src = iframe.dataset.src;
-        iframe.addEventListener('load', () => {
-          const ph = preview.querySelector('.ph');
-          if (ph) ph.remove();
-          fit(preview);
-        });
-      }
-      obs.unobserve(preview);
-    });
-  }, { rootMargin: '300px' });
+  function renderPage() {
+    const items = projects.slice(page * PER_PAGE, page * PER_PAGE + PER_PAGE);
+    grid.innerHTML = items.map(cardHTML).join('');
+    if (io) io.disconnect();
+    previews = Array.from(grid.querySelectorAll('.work-preview'));
+    io = new IntersectionObserver((entries, obs) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const preview = entry.target;
+        const iframe = preview.querySelector('iframe');
+        fit(preview);
+        if (iframe && !iframe.src && iframe.dataset.src) {
+          iframe.src = iframe.dataset.src;
+          iframe.addEventListener('load', () => { const ph = preview.querySelector('.ph'); if (ph) ph.remove(); fit(preview); });
+        }
+        obs.unobserve(preview);
+      });
+    }, { rootMargin: '300px' });
+    previews.forEach((p) => io.observe(p));
+    renderPager();
+  }
 
-  previews.forEach((p) => io.observe(p));
+  function renderPager() {
+    const pager = document.getElementById('workPager');
+    if (!pager) return;
+    if (totalPages <= 1) { pager.innerHTML = ''; return; }
+    let html = `<button class="pg-btn" data-pg="prev" ${page === 0 ? 'disabled' : ''} aria-label="Página anterior">‹</button>`;
+    for (let i = 0; i < totalPages; i++) html += `<button class="pg-btn ${i === page ? 'active' : ''}" data-pg="${i}">${i + 1}</button>`;
+    html += `<button class="pg-btn" data-pg="next" ${page === totalPages - 1 ? 'disabled' : ''} aria-label="Próxima página">›</button>`;
+    pager.innerHTML = html;
+    pager.querySelectorAll('[data-pg]').forEach((b) => b.addEventListener('click', () => {
+      const v = b.dataset.pg;
+      if (v === 'prev') page = Math.max(0, page - 1);
+      else if (v === 'next') page = Math.min(totalPages - 1, page + 1);
+      else page = +v;
+      renderPage();
+      document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }));
+  }
 
-  // Reajusta no redimensionamento
+  renderPage();
   let t;
-  window.addEventListener('resize', () => {
-    clearTimeout(t);
-    t = setTimeout(() => previews.forEach(fit), 150);
-  });
+  window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => previews.forEach(fit), 150); });
 }
 
 // ===== Sistemas completos (carrossel) =====
