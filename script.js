@@ -129,6 +129,20 @@ const systems = [
       'Site institucional com equipe e serviços',
     ],
   },
+  {
+    repo: 'fitgo-delivery',
+    demo: 'https://paulogsiqueira.github.io/fitgo-delivery/',
+    badge: 'Fullstack · Supabase',
+    nome: 'FitGo · Delivery Fitness',
+    desc: 'Delivery de comida fitness com login, carrinho e cálculo de frete pelo endereço. Ao finalizar, o pedido vira uma mensagem pronta para o WhatsApp e fica salvo no histórico do cliente.',
+    feats: [
+      'Cadastro e login de clientes (Supabase Auth)',
+      'Carrinho + cardápio vindo do banco',
+      'Frete calculado por CEP + distância real',
+      'Pedido formatado em mensagem (WhatsApp)',
+      'Histórico de pedidos por usuário',
+    ],
+  },
 ];
 
 const track = document.getElementById('systemsTrack');
