@@ -28,6 +28,14 @@ const projects = [
   { repo: 'template-advocacia',        nome: 'Almeida & Associados', area: 'Advocacia',             cor: '#b08a3e' },
   { repo: 'template-arquitetura',      nome: 'Studio Arq',           area: 'Arquitetura',           cor: '#9aa3b2' },
   { repo: 'template-marcenaria',       nome: 'João Silva',           area: 'Móveis Planejados',     cor: '#b08a5e' },
+  { repo: 'template-psicologo',        nome: 'Espaço Acolher',       area: 'Psicólogo',             cor: '#7a9b86' },
+  { repo: 'template-nutricionista',    nome: 'NutriVida',            area: 'Nutricionista',         cor: '#3aa860' },
+  { repo: 'template-energia-solar',    nome: 'SolarUp',              area: 'Energia Solar',         cor: '#f7b529' },
+  { repo: 'template-dentista',         nome: 'OdontoVita',           area: 'Dentista',              cor: '#1aa6c4' },
+  { repo: 'template-casamento',        nome: 'João & Maria',         area: 'Casamento',             cor: '#c99a8c' },
+  { repo: 'template-curso-online',     nome: 'Método Acelera',       area: 'Curso Online',          cor: '#ff6a3d' },
+  { repo: 'template-hamburgueria',     nome: 'Brasa Burger',         area: 'Hamburgueria',          cor: '#e8471f' },
+  { repo: 'template-fotografo',        nome: 'Studio Lente',         area: 'Fotografia',            cor: '#1a1a1a' },
 ];
 
 const PREVIEW_W = 1280; // largura "virtual" do site dentro do iframe
