@@ -164,6 +164,20 @@ const systems = [
       'Histórico de pedidos por usuário',
     ],
   },
+  {
+    repo: 'meubolso-financas',
+    demo: 'https://paulogsiqueira.github.io/meubolso-financas/',
+    badge: 'Fullstack · Supabase · Chart.js',
+    nome: 'MeuBolso · Controle Financeiro',
+    desc: 'Dashboard de finanças pessoais com login, lançamento de receitas e despesas, segmentos personalizáveis e análise em gráficos configuráveis — tudo salvo por usuário.',
+    feats: [
+      'Conta de usuário com dados privados (RLS)',
+      'Despesas por segmento + receitas (ativa/passiva)',
+      'Dashboard com cartões de resumo do mês',
+      'Gráficos configuráveis (tipo + filtro de segmentos)',
+      'Evolução de 6 meses e renda por origem',
+    ],
+  },
 ];
 
 const track = document.getElementById('systemsTrack');
