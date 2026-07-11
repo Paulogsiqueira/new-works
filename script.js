@@ -246,3 +246,41 @@ if (track) {
     track.addEventListener('scroll', () => { clearTimeout(track._s); track._s = setTimeout(setActive, 80); });
   }
 }
+
+// ===== Animações: revelar ao rolar + contadores =====
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const revealSel = '.section-head, .service, .steps li, .why-card, .contact-inner > div, .hero-text > *, .hero-visual';
+  const targets = Array.from(document.querySelectorAll(revealSel));
+  targets.forEach((elx) => {
+    elx.classList.add('reveal');
+    const sibs = [...elx.parentElement.children].filter((c) => c.classList.contains('reveal'));
+    elx.style.transitionDelay = Math.min(sibs.indexOf(elx), 6) * 0.07 + 's';
+  });
+  const revObs = new IntersectionObserver((entries, obs) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+  targets.forEach((t) => revObs.observe(t));
+
+  // contador animado nos números do hero
+  const countUp = (elm) => {
+    const m = elm.textContent.trim().match(/^(\D*)(\d[\d.,]*)(\D*)$/);
+    if (!m) return;
+    const prefix = m[1], suffix = m[3];
+    const alvo = parseFloat(m[2].replace(/\./g, '').replace(',', '.'));
+    if (isNaN(alvo)) return;
+    const dur = 1200, t0 = performance.now();
+    const tick = (t) => {
+      const p = Math.min((t - t0) / dur, 1);
+      elm.textContent = prefix + Math.round(alvo * (1 - Math.pow(1 - p, 3))) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  const heroStats = document.querySelector('.hero-stats');
+  if (heroStats) {
+    const so = new IntersectionObserver((entries, obs) => {
+      entries.forEach((e) => { if (e.isIntersecting) { heroStats.querySelectorAll('strong').forEach(countUp); obs.disconnect(); } });
+    }, { threshold: 0.5 });
+    so.observe(heroStats);
+  }
+}
