@@ -289,7 +289,7 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 
   const AJAX_URL = 'https://formsubmit.co/ajax/pgustavo-siqueira@hotmail.com';
   const OBRIGADO = 'obrigado.html';
-  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   const btn = document.getElementById('contactSubmit');
   const btnText = btn ? btn.textContent : 'Enviar mensagem';
