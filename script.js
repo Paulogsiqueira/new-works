@@ -281,3 +281,105 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     so.observe(heroStats);
   }
 }
+
+// ===== Formulário de contato: validação + envio AJAX (sem sair da página) =====
+(function () {
+  const form = document.getElementById('contactForm');
+  if (!form) return;
+
+  const AJAX_URL = 'https://formsubmit.co/ajax/pgustavo-siqueira@hotmail.com';
+  const OBRIGADO = 'obrigado.html';
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const btn = document.getElementById('contactSubmit');
+  const btnText = btn ? btn.textContent : 'Enviar mensagem';
+  const status = document.getElementById('formStatus');
+  const nome = form.querySelector('[name="Nome"]');
+  const email = form.querySelector('[name="email"]');
+  const msg = form.querySelector('[name="Mensagem"]');
+  const honey = form.querySelector('[name="_honey"]');
+
+  const setStatus = (text, kind) => {
+    if (!status) return;
+    status.textContent = text || '';
+    status.className = 'form-status' + (kind ? ' is-' + kind : '');
+    status.hidden = !text;
+  };
+
+  const clearError = (field) => {
+    field.classList.remove('invalid');
+    field.removeAttribute('aria-invalid');
+    const err = field.parentElement.querySelector('.field-error');
+    if (err) err.remove();
+  };
+
+  const showError = (field, message) => {
+    field.classList.add('invalid');
+    field.setAttribute('aria-invalid', 'true');
+    let err = field.parentElement.querySelector('.field-error');
+    if (!err) {
+      err = document.createElement('span');
+      err.className = 'field-error';
+      field.parentElement.appendChild(err);
+    }
+    err.textContent = message;
+  };
+
+  // limpa o erro do campo assim que o usuário corrige
+  [nome, email, msg].forEach((f) => {
+    if (!f) return;
+    f.addEventListener('input', () => { if (f.classList.contains('invalid')) clearError(f); });
+  });
+
+  const validate = () => {
+    let firstInvalid = null;
+    const check = (field, ok, message) => {
+      if (ok) { clearError(field); }
+      else { showError(field, message); if (!firstInvalid) firstInvalid = field; }
+    };
+    check(nome, nome.value.trim().length >= 2, 'Informe o seu nome.');
+    check(email, EMAIL_RE.test(email.value.trim()), 'Informe um e-mail válido (ex: voce@email.com).');
+    check(msg, msg.value.trim().length >= 5, 'Escreva uma mensagem com pelo menos 5 caracteres.');
+    if (firstInvalid) { firstInvalid.focus(); return false; }
+    return true;
+  };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // honeypot preenchido = robô: finge sucesso e não envia
+    if (honey && honey.value) { window.location.href = OBRIGADO; return; }
+
+    if (!validate()) {
+      setStatus('Confira os campos destacados acima.', 'error');
+      return;
+    }
+
+    const payload = Object.fromEntries(new FormData(form).entries());
+    delete payload._honey;
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+    setStatus('Enviando a sua mensagem…', 'sending');
+
+    try {
+      const res = await fetch(AJAX_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && (data.success === 'true' || data.success === true)) {
+        setStatus('Mensagem enviada! Redirecionando…', 'ok');
+        window.location.href = OBRIGADO;
+        return;
+      }
+      throw new Error(data.message || 'Falha no envio');
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = btnText;
+      setStatus('Não foi possível enviar agora. Tente novamente ou fale pelo WhatsApp (14) 99782-0009.', 'error');
+    }
+  });
+})();

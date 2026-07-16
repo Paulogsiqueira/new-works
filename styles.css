@@ -198,6 +198,14 @@ section { padding: 5.5rem 0; }
 .contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { outline: 2px solid var(--brand); border-color: transparent; }
 .contact-form .btn { width: 100%; justify-content: center; margin-top: .5rem; }
 .contact-form small { display: block; text-align: center; color: var(--muted); margin-top: .8rem; font-size: .78rem; }
+.contact-form input.invalid, .contact-form textarea.invalid { border-color: #f87171; }
+.contact-form input.invalid:focus, .contact-form textarea.invalid:focus { outline-color: #f87171; }
+.field-error { display: block; color: #f87171; font-size: .78rem; font-weight: 500; margin-top: .35rem; }
+.form-status { text-align: center; font-size: .88rem; font-weight: 600; margin-top: .9rem; }
+.form-status.is-sending { color: var(--muted); }
+.form-status.is-error { color: #f87171; }
+.form-status.is-ok { color: #34d399; }
+[hidden] { display: none !important; }
 
 /* Footer */
 .site-footer { border-top: 1px solid var(--line); background: var(--surface); padding: 3rem 0 2rem; }
