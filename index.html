@@ -189,11 +189,16 @@ newWorks.<span class="c-fn">entregar</span>(); <span class="c-cmt">// 🚀</span
             <li><strong>Atendimento</strong> Todo o Brasil · 100% online</li>
           </ul>
         </div>
-        <form class="contact-form" onsubmit="return false;">
-          <label>Nome<input type="text" placeholder="Seu nome" required /></label>
-          <label>E-mail<input type="email" placeholder="voce@email.com" required /></label>
+        <form class="contact-form" action="https://formsubmit.co/pgustavo-siqueira@hotmail.com" method="POST">
+          <input type="hidden" name="_subject" value="NEW WORKS DESENVOLVIMENTO" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_next" value="https://newworks.com.br/obrigado.html" />
+          <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0" />
+          <label>Nome<input type="text" name="Nome" placeholder="Seu nome" required /></label>
+          <label>E-mail<input type="email" name="email" placeholder="voce@email.com" required /></label>
           <label>Tipo de projeto
-            <select>
+            <select name="Tipo de projeto">
               <option>Site / Landing page</option>
               <option>Desenvolvimento de software</option>
               <option>Automação / RPA</option>
@@ -201,9 +206,9 @@ newWorks.<span class="c-fn">entregar</span>(); <span class="c-cmt">// 🚀</span
               <option>Outro</option>
             </select>
           </label>
-          <label>Mensagem<textarea rows="3" placeholder="Conte um pouco sobre a sua ideia"></textarea></label>
+          <label>Mensagem<textarea name="Mensagem" rows="3" placeholder="Conte um pouco sobre a sua ideia" required></textarea></label>
           <button type="submit" class="btn btn-primary">Enviar mensagem</button>
-          <small>Demonstração · este formulário não envia dados.</small>
+          <small>Respondemos em até 1 dia útil.</small>
         </form>
       </div>
     </section>

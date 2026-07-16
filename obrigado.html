@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <meta name="description" content="Mensagem enviada para a New Works Desenvolvimento. Retornaremos em breve." />
+  <title>Mensagem enviada · New Works Desenvolvimento</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .thanks-wrap { min-height: 100vh; display: grid; place-items: center; padding: 2rem 1.2rem; }
+    .thanks-card {
+      max-width: 520px; width: 100%; text-align: center;
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius, 18px);
+      padding: 3rem 2rem; box-shadow: var(--shadow, 0 30px 60px -30px rgba(0,0,0,.6));
+    }
+    .thanks-badge {
+      width: 84px; height: 84px; margin: 0 auto 1.6rem; border-radius: 50%;
+      display: grid; place-items: center; background: var(--grad);
+      box-shadow: 0 16px 34px -14px rgba(99,102,241,.7);
+    }
+    .thanks-badge svg { width: 42px; height: 42px; }
+    .thanks-card h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.8rem, 4vw, 2.4rem); margin-bottom: .8rem; }
+    .thanks-card p { color: var(--muted); font-size: 1.05rem; margin-bottom: 2rem; }
+    .thanks-actions { display: flex; flex-wrap: wrap; gap: .8rem; justify-content: center; }
+    @media (prefers-reduced-motion: no-preference) {
+      .thanks-badge { animation: pop .5s cubic-bezier(.2,.8,.2,1) both; }
+      .thanks-badge svg path { stroke-dasharray: 40; stroke-dashoffset: 40; animation: draw .5s .25s ease forwards; }
+      @keyframes pop { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+      @keyframes draw { to { stroke-dashoffset: 0; } }
+    }
+  </style>
+</head>
+<body>
+  <main class="thanks-wrap">
+    <div class="thanks-card">
+      <div class="thanks-badge">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5l5 5 11-11" stroke="#06080d" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h1>Mensagem enviada! 🚀</h1>
+      <p>Obrigado pelo contato. Recebemos a sua mensagem e a <strong>New Works Desenvolvimento</strong> retorna em até 1 dia útil.</p>
+      <div class="thanks-actions">
+        <a href="/" class="btn btn-primary">Voltar ao site</a>
+        <a href="https://wa.me/5514997820009" target="_blank" rel="noopener" class="btn btn-ghost">Chamar no WhatsApp</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
