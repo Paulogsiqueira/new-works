@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=2" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
   <header class="site-header" id="topo">
@@ -55,7 +55,7 @@
         <div class="hero-visual" aria-hidden="true">
           <div class="code-card">
             <div class="code-bar"><span></span><span></span><span></span><em>newWorks.deploy()</em></div>
-            <pre><code><span class="c-key">const</span> newWorks = <span class="c-fn">criar</span>({
+            <pre><code id="heroCode"><span class="c-key">const</span> newWorks = <span class="c-fn">criar</span>({
   <span class="c-prop">sites</span>: <span class="c-str">'qualquer segmento'</span>,
   <span class="c-prop">software</span>: <span class="c-str">'sob medida'</span>,
   <span class="c-prop">automacao</span>: <span class="c-str">'RPA'</span>,
@@ -117,6 +117,19 @@ newWorks.<span class="c-fn">entregar</span>(); <span class="c-cmt">// 🚀</span
       </div>
     </section>
 
+    <section id="portfolio" class="portfolio">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Portfólio · Modelos prontos</p>
+          <h2>Sites profissionais, prontos para a sua marca</h2>
+          <p class="section-sub">Modelos já desenvolvidos por nós para diversos segmentos. Personalizamos com o seu conteúdo e identidade para uma entrega rápida. Todos os exemplos abaixo estão <strong>no ar</strong>.</p>
+        </div>
+        <div class="work-grid" id="workGrid"><!-- gerado via JavaScript --></div>
+        <div class="pager" id="workPager"></div>
+        <p class="portfolio-note">Não encontrou o seu segmento? <a href="#contato">A gente cria um do zero pra você →</a></p>
+      </div>
+    </section>
+
     <section id="sistemas" class="systems">
       <div class="container">
         <div class="section-head">
@@ -130,19 +143,6 @@ newWorks.<span class="c-fn">entregar</span>(); <span class="c-cmt">// 🚀</span
           <button class="systems-btn next" id="sysNext" aria-label="Próximo">›</button>
         </div>
         <div class="systems-dots" id="systemsDots"></div>
-      </div>
-    </section>
-
-    <section id="portfolio" class="portfolio">
-      <div class="container">
-        <div class="section-head">
-          <p class="eyebrow">Portfólio · Modelos prontos</p>
-          <h2>Sites profissionais, prontos para a sua marca</h2>
-          <p class="section-sub">Modelos já desenvolvidos por nós para diversos segmentos. Personalizamos com o seu conteúdo e identidade para uma entrega rápida. Todos os exemplos abaixo estão <strong>no ar</strong>.</p>
-        </div>
-        <div class="work-grid" id="workGrid"><!-- gerado via JavaScript --></div>
-        <div class="pager" id="workPager"></div>
-        <p class="portfolio-note">Não encontrou o seu segmento? <a href="#contato">A gente cria um do zero pra você →</a></p>
       </div>
     </section>
 
@@ -248,6 +248,6 @@ newWorks.<span class="c-fn">entregar</span>(); <span class="c-cmt">// 🚀</span
     </div>
   </footer>
 
-  <script src="script.js?v=2"></script>
+  <script src="script.js?v=3"></script>
 </body>
 </html>

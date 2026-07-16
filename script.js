@@ -383,3 +383,70 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     }
   });
 })();
+
+// ===== Efeito de digitação no bloco de código do hero =====
+(function () {
+  const code = document.getElementById('heroCode');
+  if (!code) return;
+
+  // conteúdo com destaque de sintaxe (classe null = texto simples)
+  const tokens = [
+    { t: 'const', c: 'c-key' }, { t: ' newWorks = ' }, { t: 'criar', c: 'c-fn' }, { t: '({\n' },
+    { t: '  ' }, { t: 'sites', c: 'c-prop' }, { t: ': ' }, { t: "'qualquer segmento'", c: 'c-str' }, { t: ',\n' },
+    { t: '  ' }, { t: 'software', c: 'c-prop' }, { t: ': ' }, { t: "'sob medida'", c: 'c-str' }, { t: ',\n' },
+    { t: '  ' }, { t: 'automacao', c: 'c-prop' }, { t: ': ' }, { t: "'RPA'", c: 'c-str' }, { t: ',\n' },
+    { t: '});\n\n' },
+    { t: 'newWorks.' }, { t: 'entregar', c: 'c-fn' }, { t: '(); ' }, { t: '// 🚀', c: 'c-cmt' },
+  ];
+
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const finalHTML = tokens.map((tk) => (tk.c ? `<span class="${tk.c}">${esc(tk.t)}</span>` : esc(tk.t))).join('');
+
+  // sem animação: mostra o código completo direto
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    code.innerHTML = finalHTML;
+    return;
+  }
+
+  // achata em caracteres, preservando a classe de cada um
+  const chars = [];
+  tokens.forEach((tk) => { for (const ch of tk.t) chars.push({ ch, c: tk.c || null }); });
+
+  const CARET = '<span class="type-caret"></span>';
+  const render = (n) => {
+    let html = '', j = 0;
+    while (j < n) {
+      const c = chars[j].c; let seg = '';
+      while (j < n && chars[j].c === c) { seg += chars[j].ch; j++; }
+      html += c ? `<span class="${c}">${esc(seg)}</span>` : esc(seg);
+    }
+    code.innerHTML = html + CARET;
+  };
+
+  code.classList.add('typing');
+  code.innerHTML = CARET; // evita o flash do conteúdo estático
+
+  let i = 0;
+  const type = () => {
+    render(i);
+    if (i >= chars.length) { code.innerHTML = finalHTML + '<span class="type-caret type-caret--done"></span>'; return; }
+    const justCh = i > 0 ? chars[i - 1].ch : '';
+    i++;
+    let delay = 28 + Math.random() * 42;          // ritmo humano
+    if (justCh === '\n') delay = 260;             // pausa ao pular linha
+    else if (',{}();'.includes(justCh)) delay = 120; // respira na pontuação
+    setTimeout(type, delay);
+  };
+
+  // começa quando o hero entra em cena (ou logo após carregar)
+  const start = () => setTimeout(type, 450);
+  const visual = code.closest('.hero-visual') || code;
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach((e) => { if (e.isIntersecting) { obs.disconnect(); start(); } });
+    }, { threshold: 0.3 });
+    io.observe(visual);
+  } else {
+    start();
+  }
+})();
