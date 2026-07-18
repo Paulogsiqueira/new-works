@@ -6,7 +6,10 @@ toggle?.addEventListener('click', () => {
   toggle.setAttribute('aria-expanded', String(open));
 });
 links?.querySelectorAll('a').forEach((a) =>
-  a.addEventListener('click', () => links.classList.remove('open'))
+  a.addEventListener('click', () => {
+    links.classList.remove('open');
+    toggle?.setAttribute('aria-expanded', 'false');
+  })
 );
 
 // ===== Ano no rodapé =====
@@ -296,8 +299,20 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   const status = document.getElementById('formStatus');
   const nome = form.querySelector('[name="Nome"]');
   const email = form.querySelector('[name="email"]');
+  const celular = form.querySelector('[name="Celular"]');
   const msg = form.querySelector('[name="Mensagem"]');
   const honey = form.querySelector('[name="_honey"]');
+
+  // máscara simples de celular: (14) 99999-9999
+  if (celular) {
+    celular.addEventListener('input', () => {
+      let d = celular.value.replace(/\D/g, '').slice(0, 11);
+      let v = d;
+      if (d.length > 2) v = '(' + d.slice(0, 2) + ') ' + d.slice(2);
+      if (d.length > 7) v = '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7);
+      celular.value = v;
+    });
+  }
 
   const setStatus = (text, kind) => {
     if (!status) return;
@@ -326,7 +341,7 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   };
 
   // limpa o erro do campo assim que o usuário corrige
-  [nome, email, msg].forEach((f) => {
+  [nome, email, celular, msg].forEach((f) => {
     if (!f) return;
     f.addEventListener('input', () => { if (f.classList.contains('invalid')) clearError(f); });
   });
@@ -334,11 +349,13 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   const validate = () => {
     let firstInvalid = null;
     const check = (field, ok, message) => {
+      if (!field) return;
       if (ok) { clearError(field); }
       else { showError(field, message); if (!firstInvalid) firstInvalid = field; }
     };
     check(nome, nome.value.trim().length >= 2, 'Informe o seu nome.');
     check(email, EMAIL_RE.test(email.value.trim()), 'Informe um e-mail válido (ex: voce@email.com).');
+    check(celular, celular.value.replace(/\D/g, '').length >= 10, 'Informe um celular válido com DDD (ex: (14) 99999-9999).');
     check(msg, msg.value.trim().length >= 5, 'Escreva uma mensagem com pelo menos 5 caracteres.');
     if (firstInvalid) { firstInvalid.focus(); return false; }
     return true;
