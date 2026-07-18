@@ -41,33 +41,20 @@ const projects = [
   { repo: 'template-fotografo',        nome: 'Studio Lente',         area: 'Fotografia',            cor: '#1a1a1a' },
 ];
 
-const PREVIEW_W = 1280; // largura "virtual" do site dentro do iframe
 const grid = document.getElementById('workGrid');
 
 if (grid) {
   const PER_PAGE = 6;
   const totalPages = Math.ceil(projects.length / PER_PAGE);
   let page = 0;
-  let previews = [];
-  let io = null;
-
-  const fit = (preview) => {
-    const iframe = preview.querySelector('iframe');
-    if (!iframe) return;
-    const scale = preview.clientWidth / PREVIEW_W;
-    iframe.style.width = PREVIEW_W + 'px';
-    iframe.style.height = Math.ceil(preview.clientHeight / scale) + 'px';
-    iframe.style.transform = 'scale(' + scale + ')';
-  };
 
   const cardHTML = (p) => {
     const url = BASE + p.repo + '/';
     return `<article class="work" style="--c:${p.cor}">
-      <div class="work-preview">
-        <span class="ph">carregando preview…</span>
-        <iframe data-src="${url}" title="Prévia do site ${p.nome}" loading="lazy" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
-        <a class="work-overlay" href="${url}" target="_blank" rel="noopener"><span>Ver site ao vivo →</span></a>
-      </div>
+      <a class="work-preview" href="${url}" target="_blank" rel="noopener" aria-label="Ver o site ${p.nome} (${p.area}) ao vivo, abre em nova aba">
+        <img src="previews/${p.repo}.webp" alt="Prévia do site ${p.nome} — modelo de ${p.area}" width="880" height="572" loading="lazy" decoding="async" />
+        <span class="work-overlay"><span>Ver site ao vivo →</span></span>
+      </a>
       <div class="work-meta">
         <div><h3>${p.nome}</h3><span class="work-tag">${p.area}</span></div>
       </div>
@@ -77,22 +64,6 @@ if (grid) {
   function renderPage() {
     const items = projects.slice(page * PER_PAGE, page * PER_PAGE + PER_PAGE);
     grid.innerHTML = items.map(cardHTML).join('');
-    if (io) io.disconnect();
-    previews = Array.from(grid.querySelectorAll('.work-preview'));
-    io = new IntersectionObserver((entries, obs) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const preview = entry.target;
-        const iframe = preview.querySelector('iframe');
-        fit(preview);
-        if (iframe && !iframe.src && iframe.dataset.src) {
-          iframe.src = iframe.dataset.src;
-          iframe.addEventListener('load', () => { const ph = preview.querySelector('.ph'); if (ph) ph.remove(); fit(preview); });
-        }
-        obs.unobserve(preview);
-      });
-    }, { rootMargin: '300px' });
-    previews.forEach((p) => io.observe(p));
     renderPager();
   }
 
@@ -115,8 +86,6 @@ if (grid) {
   }
 
   renderPage();
-  let t;
-  window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => previews.forEach(fit), 150); });
 }
 
 // ===== Sistemas completos (carrossel) =====
@@ -181,12 +150,11 @@ const systems = [
 ];
 
 const track = document.getElementById('systemsTrack');
-const SYS_W = 1280;
 if (track) {
   track.innerHTML = systems.map((s) => `
     <article class="system-card">
       <div class="system-bg">
-        <iframe data-src="${s.demo}" title="Layout do sistema ${s.nome}" loading="lazy" scrolling="no" tabindex="-1" aria-hidden="true"></iframe>
+        <img src="previews/${s.repo}.webp" alt="Layout do sistema ${s.nome}" width="1000" height="625" loading="lazy" decoding="async" />
         <div class="system-shade"></div>
       </div>
       <div class="system-content">
@@ -200,29 +168,7 @@ if (track) {
       </div>
     </article>`).join('');
 
-  const fitSys = (card) => {
-    const bg = card.querySelector('.system-bg');
-    const f = card.querySelector('iframe');
-    if (!f || !bg) return;
-    const scale = bg.clientWidth / SYS_W;
-    f.style.width = SYS_W + 'px';
-    f.style.height = Math.ceil(bg.clientHeight / scale) + 'px';
-    f.style.transform = 'scale(' + scale + ')';
-  };
   const cards = Array.from(track.querySelectorAll('.system-card'));
-
-  const ioSys = new IntersectionObserver((entries, obs) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      const card = entry.target;
-      const f = card.querySelector('iframe');
-      fitSys(card);
-      if (f && !f.src && f.dataset.src) { f.src = f.dataset.src; f.addEventListener('load', () => fitSys(card)); }
-      obs.unobserve(card);
-    });
-  }, { rootMargin: '400px' });
-  cards.forEach((c) => ioSys.observe(c));
-  window.addEventListener('resize', () => { clearTimeout(window._sysT); window._sysT = setTimeout(() => cards.forEach(fitSys), 150); });
 
   const prev = document.getElementById('sysPrev');
   const next = document.getElementById('sysNext');
