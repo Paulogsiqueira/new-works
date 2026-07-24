@@ -236,7 +236,7 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   const form = document.getElementById('contactForm');
   if (!form) return;
 
-  const AJAX_URL = 'https://formsubmit.co/ajax/pgustavo-siqueira@hotmail.com';
+  const AJAX_URL = 'https://api.web3forms.com/submit';
   const OBRIGADO = 'obrigado.html';
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -247,7 +247,7 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   const email = form.querySelector('[name="email"]');
   const celular = form.querySelector('[name="Celular"]');
   const msg = form.querySelector('[name="Mensagem"]');
-  const honey = form.querySelector('[name="_honey"]');
+  const honey = form.querySelector('[name="botcheck"]');
 
   // máscara simples de celular: (14) 99999-9999
   if (celular) {
@@ -310,8 +310,8 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // honeypot preenchido = robô: finge sucesso e não envia
-    if (honey && honey.value) { window.location.href = OBRIGADO; return; }
+    // honeypot marcado/preenchido = robô: finge sucesso e não envia
+    if (honey && (honey.checked || honey.value)) { window.location.href = OBRIGADO; return; }
 
     if (!validate()) {
       setStatus('Confira os campos destacados acima.', 'error');
@@ -319,7 +319,8 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     }
 
     const payload = Object.fromEntries(new FormData(form).entries());
-    delete payload._honey;
+    delete payload.botcheck;
+    delete payload.redirect; // o redirect é feito por JS após confirmar o sucesso
 
     btn.disabled = true;
     btn.textContent = 'Enviando…';
